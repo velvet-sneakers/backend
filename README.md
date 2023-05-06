@@ -1,0 +1,27 @@
+# Инструкция по запуску проекта
+1. Нужно создать виртуальное окружение
+    ```
+    python -m venv venv
+    ```
+
+2. Теперь нужно активировать виртуальное окружение
+
+    Для Linux и Mac:
+    ```
+    source venv/bin/activate
+    ```
+
+    Для Windows:
+    ```
+    venv\Scripts\activate
+    ```
+
+3. Установи все нужные зависимости:
+    ```
+    pip install -r requirements.txt
+    ```
+
+4. Запусти проект
+    ```
+    python manage.py runserver
+    ```
