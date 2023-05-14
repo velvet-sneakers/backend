@@ -1,8 +1,14 @@
 from rest_framework.viewsets import ModelViewSet
-from shop.serializers import ShopItemsSerializer
-from shop.models import ShopItems
 from rest_framework.decorators import action
 from rest_framework.response import Response
+
+from shop.models import Shoes, ShopItems
+from shop.serializers import ShoesSerializer, ShopItemsSerializer
+
+
+class ShoesViewSet(ModelViewSet):
+    queryset = Shoes.objects.all()
+    serializer_class = ShoesSerializer
 
 
 class ShopItemsViewSet(ModelViewSet):
