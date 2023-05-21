@@ -25,3 +25,9 @@
     ```
     python manage.py runserver
     ```
+   
+# Пользователи
+## Админ
+E-Mail: admin@admin.com
+
+Пароль: admin
