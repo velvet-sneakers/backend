@@ -7,16 +7,16 @@ class UserManager(BaseUserManager):
         """
         Creates and saves a User with the given email, first name, last name, password and phone.
         """
-        if not email:
-            raise ValueError('Users must have an email address')
-        if not first_name:
-            raise ValueError('Users must have a first name')
-        if not second_name:
-            raise ValueError('Users must have a second name')
-        if not password:
-            raise ValueError('Users must have a password')
-        if not phone:
-            raise ValueError('Users must have a phone number')
+        # if not email:
+        #     raise ValueError('Users must have an email address')
+        # if not first_name:
+        #     raise ValueError('Users must have a first name')
+        # if not second_name:
+        #     raise ValueError('Users must have a second name')
+        # if not password:
+        #     raise ValueError('Users must have a password')
+        # if not phone:
+        #     raise ValueError('Users must have a phone number')
 
         user = self.model(
             email=self.normalize_email(email),
