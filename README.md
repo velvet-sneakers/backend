@@ -25,3 +25,13 @@
     ```
     python manage.py runserver
     ```
+   
+## Fixtures
+1. Создать фикстуру:
+   ```
+   python manage.py dumpdata product --indent 2 --output product/fixtures/products.json
+   ```
+2. Использовать фикстуру:
+   ```
+   python manage.py loaddata products
+   ```
