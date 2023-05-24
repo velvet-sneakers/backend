@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from django.shortcuts import get_object_or_404
+
 from shop.models import ShopItems
+from shop.models import Shoes
 
 
 class ShopItemsSerializer(serializers.ModelSerializer):
@@ -8,34 +9,21 @@ class ShopItemsSerializer(serializers.ModelSerializer):
         model = ShopItems
         fields = '__all__'
 
-    def create_shop_item(price, title, img, desc):
-        item = ShopItem(price=price, title=title, img=img, desc=desc)
-        item.save()
-        return item.id
+    def create(self, validated_data):
+        instance = self.Meta.model(**validated_data)
+        instance.save()
+        return instance
 
-    # READ
-    def get_shop_item(id):
-        item = get_object_or_404(ShopItem, id=id)
-        return item
+    def update(self, instance, validate_data):
+        instance.title = validate_data.get('title', instance.title)
+        instance.desc = validate_data.get('desc', instance.desc)
+        instance.img = validate_data.get('image', instance.img)
+        instance.price = validate_data.get('price', instance.price)
+        instance.save()
+        return instance
 
-    def get_all_shop_items():
-        items = ShopItem.objects.all()
-        return items
 
-    # UPDATE
-    def update_shop_item(id, price=None, title=None, img=None, desc=None):
-        item = get_object_or_404(ShopItem, id=id)
-        if price is not None:
-            item.price = price
-        if title is not None:
-            item.title = title
-        if img is not None:
-            item.img = img
-        if desc is not None:
-            item.desc = desc
-        item.save()
-
-    # DELETE
-    def delete_shop_item(id):
-        item = get_object_or_404(ShopItem, id=id)
-        item.delete()
+class ShoesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Shoes
+        fields = '__all__'
