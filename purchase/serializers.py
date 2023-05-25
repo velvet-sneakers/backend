@@ -8,4 +8,4 @@ class PurchaseSerializer(serializers.ModelSerializer):
     # print(shop_items)
     class Meta:
         model = Purchase
-        fields = ['price', 'purchases', 'user_id', 'date']
+        fields = ['price', 'shop_items', 'user_id', 'date']
