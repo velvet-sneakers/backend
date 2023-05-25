@@ -5,7 +5,7 @@ from django.utils import timezone
 
 class Purchase(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    shop_items = models.ForeignKey(ShopItems, related_name="shop_items", on_delete=models.SET_NULL, blank=True, null=True)
+    shop_items = models.ForeignKey(ShopItems, related_name="purchases", on_delete=models.SET_NULL, blank=True, null=True)
     user_id = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
     date = models.DateTimeField(default=timezone.now)
 

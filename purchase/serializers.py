@@ -4,8 +4,8 @@ from shop.serializers import ShopItemsSerializer
 
 
 class PurchaseSerializer(serializers.ModelSerializer):
-    shop_items = ShopItemsSerializer(many=True, read_only=True)
-
+    # purchases = ShopItemsSerializer(many=True)
+    # print(shop_items)
     class Meta:
         model = Purchase
-        fields = ['price', 'shop_items', 'user_id', 'date']
+        fields = ['price', 'purchases', 'user_id', 'date']
