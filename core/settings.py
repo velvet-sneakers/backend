@@ -153,7 +153,18 @@ SOCIAL_AUTH_VK_OAUTH2_SECRET = 'brSsU29tHyugWhOiZ787'
 SOCIAL_AUTH_VK_OAUTH2_SCOPE = ['email']
 SOCIAL_AUTH_VK_OAUTH2_EXTRA_DATA = ['email', 'first_name', 'last_name']
 
-LOGIN_REDIRECT_URL = '/api'
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
+    'authentication.pipeline.create_user',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+)
+
+# LOGIN_REDIRECT_URL = '/api'
 
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.vk.VKOAuth2',

@@ -8,7 +8,7 @@ from authentication.managers import UserManager
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(verbose_name='E-mail', max_length=500, unique=True)
-    phone = PhoneField(verbose_name='Номер телефона', max_length=20)
+    phone = PhoneField(verbose_name='Номер телефона', max_length=20, blank=True)
     first_name = models.CharField(verbose_name='Имя', max_length=50)
     second_name = models.CharField(verbose_name='Фамилия', max_length=150)
     address = models.CharField(verbose_name='Адрес', max_length=500, blank=True)
@@ -20,7 +20,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'second_name']
 
     class Meta:
         verbose_name = 'Пользователь'
