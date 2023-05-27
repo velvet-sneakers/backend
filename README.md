@@ -25,7 +25,7 @@
     ```
     python manage.py runserver
     ```
-   
+
 ## Fixtures
 1. Создать фикстуру:
    ```
@@ -35,3 +35,9 @@
    ```
    python manage.py loaddata products
    ```
+   
+# Пользователи
+## Админ
+E-Mail: admin@admin.com
+
+Пароль: admin

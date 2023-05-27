@@ -2,10 +2,8 @@ FROM python:3.9
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 WORKDIR /opt/backend
-RUN python -m venv venv
-RUN source venv/bin/activate
-COPY requirements.txt /opt/backend/
+COPY requirements.txt ./
 RUN pip install --upgrade pip && pip install -r requirements.txt
-COPY . /opt/backend/
+COPY . ./
 EXPOSE 8000
-CMD ["python", "manage.py", "runserver"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
