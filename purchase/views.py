@@ -4,6 +4,7 @@ from rest_framework.response import Response
 
 from purchase.serializers import PurchaseSerializer
 from purchase.models import Purchase
+from authentication.models import User
 
 
 class PurchaseViewSet(ModelViewSet):
@@ -12,6 +13,11 @@ class PurchaseViewSet(ModelViewSet):
 
     @action(methods=['POST'],detail=False, url_path="create-item")
     def create_items(self, request):
+        email = request.user
+        user = User.objects.get(email=email)
+        request.data['user'] = user.id
+        print(user)
+
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
