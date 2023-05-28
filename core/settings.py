@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'corsheaders',
 
+    'delivery',
     'shop',
     'product',
     'authentication'
