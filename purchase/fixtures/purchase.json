@@ -1,0 +1,20 @@
+[
+{
+  "model": "purchase.purchase",
+  "pk": 3,
+  "fields": {
+    "price": "2000.00",
+    "user_id": 1,
+    "date": "2023-05-24T13:42:22Z"
+  }
+},
+{
+  "model": "purchase.purchase",
+  "pk": 5,
+  "fields": {
+    "price": "1000.00",
+    "user_id": 2,
+    "date": "2023-05-28T18:52:58Z"
+  }
+}
+]
