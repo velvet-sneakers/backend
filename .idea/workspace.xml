@@ -4,9 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="be5b86af-ffd1-403c-a21a-25eff61bcdbe" name="Changes" comment="">
+    <list default="true" id="be5b86af-ffd1-403c-a21a-25eff61bcdbe" name="Changes" comment="what?">
+      <change beforePath="$PROJECT_DIR$/.idea/backend.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/backend.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/c2b3347b-76df-499d-9f60-0505bb9c6ac8.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/routers.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/routers.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/shop/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/shop/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/shop/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/shop/serializers.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/shop/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/shop/views.py" afterDir="false" />
     </list>
@@ -52,6 +59,7 @@
       <workItem from="1683656996477" duration="42000" />
       <workItem from="1683657045180" duration="527000" />
       <workItem from="1683658000695" duration="1135000" />
+      <workItem from="1685297210031" duration="849000" />
     </task>
     <servers />
   </component>
