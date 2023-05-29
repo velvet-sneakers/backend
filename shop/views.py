@@ -2,6 +2,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from django.core.mail import send_mail
 
 from authentication.models import User
 from shop.models import Shoes, ShopItems, Order
@@ -11,6 +12,51 @@ from shop.serializers import ShoesSerializer, ShopItemsSerializer, OrderSerializ
 class ShoesViewSet(ModelViewSet):
     queryset = Shoes.objects.all()
     serializer_class = ShoesSerializer
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [IsAuthenticated()]
+        else:
+            return [IsAdminUser()]
+
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+
+        send_mail(
+            'Создана новая обувь',
+            f'Создана обувь с именем {response.data.get("name")}',
+            'admin1@gmail.com',
+            ['admin2@gmail.com'],
+            fail_silently=True
+        )
+
+        return response
+
+    def update(self, request, *args, **kwargs):
+        response = super().update(request, *args, **kwargs)
+
+        send_mail(
+            'Изменена обувь',
+            f'Изменена обувь с id: {response.data.get("id")}',
+            'admin1@gmail.com',
+            ['admin2@gmail.com'],
+            fail_silently=True
+        )
+
+        return response
+
+    def destroy(self, request, *args, **kwargs):
+        response = super().destroy(request, *args, **kwargs)
+
+        send_mail(
+            'Изменена обувь',
+            f'Удалена обувь с id: {response.data.get("id")}',
+            'admin1@gmail.com',
+            ['admin2@gmail.com'],
+            fail_silently=True
+        )
+
+        return response
 
 
 class OrderViewSet(ModelViewSet):

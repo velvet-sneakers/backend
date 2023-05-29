@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: backend
+    restart: on-failure
+    ports:
+      - 8000:8000
+    networks:
+      - myNetwork
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog
+    restart: on-failure
+    depends_on:
+      - backend
+    ports:
+      - 1025:1025
+      - 8025:8025
+    networks:
+      - myNetwork
+
+networks:
+  myNetwork:
+    driver: bridge
