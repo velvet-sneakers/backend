@@ -50,7 +50,7 @@ class ShoesViewSet(ModelViewSet):
 
         send_mail(
             'Изменена обувь',
-            f'Изменена обувь с id: {response.data.get("id")}',
+            f'Удалена обувь с id: {response.data.get("id")}',
             'admin1@gmail.com',
             ['admin2@gmail.com'],
             fail_silently=True
