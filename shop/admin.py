@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from shop.models import ShopItems
 from shop.models import Shoes
+from shop.models import Order
 
 
 class ShopItemsAdmin(admin.ModelAdmin):
@@ -24,5 +25,14 @@ class ShoesAdmin(admin.ModelAdmin):
     list_filter = ('name',)
 
 
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ('id', 'price', 'date', 'user_id')
+    list_display_links = ('id', 'price')
+    search_fields = ('id', 'user_id')
+    list_filter = ('date',)
+
+
 admin.site.register(ShopItems, ShopItemsAdmin)
 admin.site.register(Shoes, ShoesAdmin)
+admin.site.register(Order, OrderAdmin)
+

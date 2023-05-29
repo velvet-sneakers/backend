@@ -4,6 +4,8 @@ from django.dispatch import receiver
 from purchase.models import Purchase
 import os
 
+from authentication.models import User
+
 
 class ShopItems(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -40,3 +42,17 @@ def delete_image(sender, instance, **kwargs):
 
     if os.path.exists(image_path):
         os.remove(image_path)
+
+
+class Order(models.Model):
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    date = models.DateTimeField(auto_now_add=True, verbose_name='Время создания заказа')
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Покупатель')
+    shoes_id = models.ForeignKey(Shoes, on_delete=models.CASCADE, verbose_name='Предмет заказа')
+
+    def __str__(self):
+        return self.price
+
+    class Meta:
+        verbose_name = 'Заказ'
+        verbose_name_plural = 'Заказы'
