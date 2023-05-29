@@ -76,6 +76,14 @@ class OrderViewSet(ModelViewSet):
 
         response = super().create(request, *args, **kwargs)
 
+        send_mail(
+            'Заказ создан',
+            f'Создан заказ с id: {response.data.get("id")}',
+            'admin1@gmail.com',
+            ['admin2@gmail.com'],
+            fail_silently=True
+        )
+
         return response
 
     def update(self, request, *args, **kwargs):
@@ -84,6 +92,14 @@ class OrderViewSet(ModelViewSet):
         request.data['user_id'] = user.id
 
         response = super().update(request, *args, **kwargs)
+
+        send_mail(
+            'Заказ изменен',
+            f'Заказ изменен с id: {response.data.get("id")}',
+            'admin1@gmail.com',
+            ['admin2@gmail.com'],
+            fail_silently=True
+        )
 
         return response
 
