@@ -1,7 +1,9 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
+from authentication.models import User
 from shop.models import Shoes, ShopItems, Order
 from shop.serializers import ShoesSerializer, ShopItemsSerializer, OrderSerializer
 
@@ -10,9 +12,34 @@ class ShoesViewSet(ModelViewSet):
     queryset = Shoes.objects.all()
     serializer_class = ShoesSerializer
 
+
 class OrderViewSet(ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
+
+    def get_permissions(self):
+        if self.request.method == 'DELETE':
+            return [IsAdminUser()]
+        else:
+            return [IsAuthenticated()]
+
+    def create(self, request, *args, **kwargs):
+        email = request.user.email
+        user = User.objects.get(email=email)
+        request.data['user_id'] = user.id
+
+        response = super().create(request, *args, **kwargs)
+
+        return response
+
+    def update(self, request, *args, **kwargs):
+        email = request.user.email
+        user = User.objects.get(email=email)
+        request.data['user_id'] = user.id
+
+        response = super().update(request, *args, **kwargs)
+
+        return response
 
 
 class ShopItemsViewSet(ModelViewSet):
