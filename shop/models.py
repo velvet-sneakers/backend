@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
+from purchase.models import Purchase
 import os
 
 from authentication.models import User
@@ -11,6 +12,7 @@ class ShopItems(models.Model):
     img = models.ImageField(upload_to='shop', verbose_name='Фото товара')
     title = models.CharField(verbose_name='Название товара', max_length=255)
     desc = models.TextField(verbose_name='Описание товара')
+    purchase = models.ForeignKey(Purchase, related_name="shop_items", on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
         return self.title
