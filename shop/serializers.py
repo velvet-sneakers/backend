@@ -23,6 +23,8 @@ class ShopItemsSerializer(serializers.ModelSerializer):
         return instance
 
 
+
+
 class ShoesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Shoes

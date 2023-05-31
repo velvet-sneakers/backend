@@ -116,7 +116,7 @@ class ShopItemsViewSet(ModelViewSet):
 
         send_mail(
             'Создан предмет магазина',
-            f'Создан предмет магазина с id: {Response.data.get("id")}',
+            f'Создан предмет магазина с id: {serializer.data.get("id")}',
             'admin1@gmail.com',
             ['admin2@gmail.com'],
             fail_silently=True
@@ -146,7 +146,7 @@ class ShopItemsViewSet(ModelViewSet):
 
         send_mail(
             'Обновлен предмет магазина',
-            f'Обновлен предмет магазина с id: {Response.data.get("id")}',
+            f'Обновлен предмет магазина с id: {serializer.data.get("id")}',
             'admin1@gmail.com',
             ['admin2@gmail.com'],
             fail_silently=True
@@ -164,14 +164,14 @@ class ShopItemsViewSet(ModelViewSet):
         except:
             return Response({'error': 'not put'})
 
-        items.delete()
-
         send_mail(
             'Удален предмет магазина',
-            f'Удален предмет магазина с id: {Response.data.get("id")}',
+            f'Удален предмет магазина с id: {items.id}',
             'admin1@gmail.com',
             ['admin2@gmail.com'],
             fail_silently=True
         )
+
+        items.delete()
 
         return Response({'message': 'items delete'})
