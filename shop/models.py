@@ -22,6 +22,13 @@ class ShopItems(models.Model):
         verbose_name_plural = 'Товары'
         ordering = ['id', 'title']
 
+# Когда предмет будет удаляться, то и её фотография будет удалятся из media/shop
+@receiver(pre_delete, sender=ShopItems)
+def delete_image(sender, instance, **kwargs):
+    image_path = instance.image.path
+
+    if os.path.exists(image_path):
+        os.remove(image_path)
 
 class Shoes(models.Model):
     name = models.CharField(verbose_name='Название обуви', max_length=255)
