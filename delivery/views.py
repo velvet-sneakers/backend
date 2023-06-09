@@ -2,7 +2,8 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-
+from purchase.models import Purchase
+from shop.models import Order
 from django.core.mail import send_mail
 
 from delivery.models import Delivery
@@ -16,9 +17,13 @@ class DeliveryViewSet(ModelViewSet):
 
     @action(methods=['POST'], permission_classes=[IsAuthenticated], detail= False, url_path="create-items")
     def create_delivery(self, request):
-        email = request.user.email
-        user = User.objects.get(email=email)
-        request.data['user_id'] = user.id
+        order_id = request.order.id
+        purchase_id = request.purchase.id
+        purchase = Purchase.objects.get(id=purchase_id)
+        order = Order.objects.get(id=order_id)
+        request.data["order_id"] = order.id
+        request.data["purchase_id"] = purchase.id
+
 
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
