@@ -1,0 +1,36 @@
+[
+  {
+    "model": "authentication.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$QZUiOB2DZuqqF579eFhEmQ$r0jbchM7r4k8e8fRJmBPToraH9nDrTJxt5dRR2AGQ5s=",
+      "last_login": null,
+      "is_superuser": false,
+      "email": "alex@gmail.com",
+      "phone": "88005553535",
+      "first_name": "Alex",
+      "second_name": "John",
+      "address": "",
+      "is_staff": false,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "authentication.user",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$Jw5TYNs8n91Yh1c2V3whpR$27JyVPdi1vUj3gyUhSW/JbS0FzGB/RZcoFZ/cfWB+Yo=",
+      "last_login": "2023-05-21T10:05:14.787Z",
+      "is_superuser": true,
+      "email": "admin@admin.com",
+      "phone": "88005553535",
+      "first_name": "admin",
+      "second_name": "admin",
+      "address": "",
+      "is_staff": true,
+      "groups": [],
+      "user_permissions": []
+    }
+  }
+]

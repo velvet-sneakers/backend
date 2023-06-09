@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from shop.models import ShopItems
+from shop.models import ShopItems, Order
 from shop.models import Shoes
 
 
@@ -23,7 +23,15 @@ class ShopItemsSerializer(serializers.ModelSerializer):
         return instance
 
 
+
+
 class ShoesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Shoes
+        fields = '__all__'
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
         fields = '__all__'

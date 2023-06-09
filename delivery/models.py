@@ -9,4 +9,4 @@ class Delivery(models.Model):
 
     class Meta:
         verbose_name = 'Доставка'
-        verbose_name_plural = 'Доставки '
+        verbose_name_plural = 'Доставки'
