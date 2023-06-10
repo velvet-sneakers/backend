@@ -14,7 +14,7 @@
       "fields": {
         "purchase": 5,
         "order": 2,
-        "status": "В отправке"
+        "status": "Отправлен"
       }
     }
     ]
