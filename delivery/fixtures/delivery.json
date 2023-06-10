@@ -3,8 +3,8 @@
       "model": "delivery.delivery",
       "pk": 1,
       "fields": {
-        "purchase_id": 3,
-        "order_id": 1,
+        "purchase": 3,
+        "order": 1,
         "status": "Готов к выдаче"
       }
     },
@@ -12,8 +12,8 @@
       "model": "delivery.delivery",
       "pk": 2,
       "fields": {
-        "purchase_id": 5,
-        "order_id": 2,
+        "purchase": 5,
+        "order": 2,
         "status": "В отправке"
       }
     }

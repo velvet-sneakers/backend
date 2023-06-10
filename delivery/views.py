@@ -1,9 +1,5 @@
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from purchase.models import Purchase
-from shop.models import Order
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from django.core.mail import send_mail
 
 from delivery.models import Delivery
@@ -12,83 +8,50 @@ from delivery.serializers import DeliverySerializer
 
 
 class DeliveryViewSet(ModelViewSet):
-    queryset = Delivery.objects.all().order_by('-id')
+    queryset = Delivery.objects.all()
     serializer_class = DeliverySerializer
 
-    @action(methods=['POST'], permission_classes=[IsAuthenticated], detail= False, url_path="create-items")
-    def create_delivery(self, request):
-        order_id = request.order.id
-        purchase_id = request.purchase.id
-        purchase = Purchase.objects.get(id=purchase_id)
-        order = Order.objects.get(id=order_id)
-        request.data["order_id"] = order.id
-        request.data["purchase_id"] = purchase.id
+    def get_permissions(self):
+        if self.request.method == 'DELETE':
+            return [IsAdminUser()]
+        else:
+            return [IsAuthenticated()]
 
-
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-
-        
-        send_mail(
-            'Создан предмет доставки',
-            f'Создан предмет доставка с id: {serializer.data.get("id")}',
-            'admin1@gmail.com',
-            ['admin2@gmail.com'],
-            fail_silently=True
-        )
-        
-        return Response({'message':'added'})
-
-    @action(methods=['GET'], permission_classes=[IsAuthenticated], detail= False,url_path="items")
-    def get_delivery(self, request):
-        items = Delivery.objects.all()
-        data=DeliverySerializer(items, many=True).data
-        return Response(data)
-
-    @action(methods=['PUT'], permission_classes=[IsAuthenticated], detail= True ,url_path="update-items")
-    def update_items(self, request, pk):
-
-        if not pk:
-            return Response({'error': 'not put'})
-
-        try:
-            instance = Delivery.objects.get(id=pk)
-        except:
-            return Response({'error': 'not put'})
-
-
-        serializer = self.serializer_class(data=request.data ,instance=instance)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
 
         send_mail(
-            'Обновлен предмет доставки',
-            f'Обновлен предмет доставка с id: {serializer.data.get("id")}',
+            'Создана новая доставка',
+            f'Создана доставка {response.data.get("order_id")} - {response.data.get("purchase_id")}',
             'admin1@gmail.com',
             ['admin2@gmail.com'],
             fail_silently=True
         )
 
-        return Response({'message': serializer.data})
+        return response
 
-    @action(methods=['DELETE'], permission_classes=[IsAuthenticated], detail= True, url_path="delete-items")
-    def delete_items(self, request, pk):
-        if not pk:
-            return Response({'error': 'not put'})
+    def update(self, request, *args, **kwargs):
+        response = super().update(request, *args, **kwargs)
 
-        try:
-            items = Delivery.objects.get(id=pk)
-        except:
-            return Response({'error': 'not put'})
+        send_mail(
+            'Изменена доставка',
+            f'Изменена доставка с id: {response.data.get("id")}',
+            'admin1@gmail.com',
+            ['admin2@gmail.com'],
+            fail_silently=True
+        )
+
+        return response
+
+    def destroy(self, request, *args, **kwargs):
+        response = super().destroy(request, *args, **kwargs)
 
         send_mail(
             'Удалена доставка',
-            f'Удален предмет доставка с id: {items.id}',
+            f'Удалена доставка с id: {response.data.get("id")}',
             'admin1@gmail.com',
             ['admin2@gmail.com'],
             fail_silently=True
         )
 
-        items.delete()
-        return Response({'message': 'items delete'})
+        return response
