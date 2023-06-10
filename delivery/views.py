@@ -22,7 +22,7 @@ class DeliveryViewSet(ModelViewSet):
 
         send_mail(
             'Создана новая доставка',
-            f'Создана доставка {response.data.get("order_id")} - {response.data.get("purchase_id")}',
+            f'Создана доставка Order - {response.data.get("order")}, Purchase - {response.data.get("purchase")}',
             'admin1@gmail.com',
             ['admin2@gmail.com'],
             fail_silently=True
