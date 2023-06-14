@@ -67,8 +67,75 @@
    ```
 4. Теперь бэкенд крутится на 8000 порту, а админка `Mailhog` на 8025 порту.
 
+## Redis
+Устанавливаем Redis
+```
+brew install redis
+```
+```
+brew services start redis
+```
+Запускаем Redis сервер
+```
+redis-server
+```
+
+## Celery и Flower
+Устанавливаем все новые зависимости в проекте
+```
+pip install -r requirements.txt
+```
+Запуск Celery (в отдельном терминале)
+```
+celery -A core worker --loglevel=info
+```
+Запускаем Flower (в отдельном терминале)
+```
+celery -A core flower --port=5555
+```
+По адресу http://localhost:5555 будет работать админка Flower, где будут отображаться задачи из `Celery`
+
+## Как писать задачи для Celery
+В папке приложения создайте файл `tasks.py`, где будут все задачи для `Celery` для конкретного приложения. Мы будем отправлять письма через Celery. Пример:
+```python
+from celery import shared_task
+from django.core.mail import send_mail
+
+
+@shared_task
+def send_email_created_shoes(name):
+    send_mail(
+        'Создана новая обувь',
+        f'Создана обувь с именем {name}',
+        'admin1@gmail.com',
+        ['admin2@gmail.com'],
+        fail_silently=True
+    )
+```
+
+Теперь в `views.py` вызываем нашу функцию, которая принмает название обуви и отправляет письмо через `Celery`:
+```python
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+
+        send_email_created_shoes.delay(response.data.get("name"))
+
+        return response
+```
+
+После того как вы создали новую задачу в `tasks.py`, нужно перезапускать `Celery` и `Flower`
+
+Перезапуск Celery (в отдельном терминале)
+```
+celery -A core worker --loglevel=info
+```
+Перезапускаем Flower (в отдельном терминале)
+```
+celery -A core flower --port=5555
+```
 # Пользователи
 ## Админ
 E-Mail: admin@admin.com
 
 Пароль: admin
+
