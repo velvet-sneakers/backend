@@ -1,0 +1,14 @@
+{
+  "port": 8001,
+  "engine": "redis",
+  "redis_address": "redis://localhost:6379",
+  "allowed_origins": "http://127.0.0.1:8000",
+  "proxy_connect_endpoint": "http://localhost:8000/chat/centrifugo/connect/",
+  "proxy_publish_endpoint": "http://localhost:8000/chat/centrifugo/publish/",
+  "proxy_subscribe_endpoint": "http://localhost:8000/chat/centrifugo/subscribe/",
+  "token_hmac_secret_key": "db082d79-e9eb-41cb-a18c-0ec19ff79ef4",
+  "admin": true,
+  "admin_password": "f85de801-dfba-461b-b838-4dee4ba00c68",
+  "admin_secret": "8742ebaa-e862-4627-bff5-137f8cf5909e",
+  "api_key": "a0ecf043-0219-49f1-9058-651fc7e32c5f"
+}

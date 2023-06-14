@@ -1,5 +1,4 @@
 from django.db import models
-# from shop.models import ShopItems
 from authentication.models import User
 from django.utils import timezone
 

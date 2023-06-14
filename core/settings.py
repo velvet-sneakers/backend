@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'shop',
     'product',
     'authentication',
-    'purchase'
+    'purchase',
+    'notification'
 ]
 
 MIDDLEWARE = [
@@ -168,3 +169,7 @@ CELERY_FLOWER = {
     'port': 5555,
     'address': '127.0.0.1'
 }
+
+CENTRIFUGE_ADDRESS = 'http://localhost:8001'
+CENTRIFUGE_API_KEY = 'a0ecf043-0219-49f1-9058-651fc7e32c5f'
+CENTRIFUGE_SECRET = '8742ebaa-e862-4627-bff5-137f8cf5909e'

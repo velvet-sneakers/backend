@@ -133,6 +133,17 @@ celery -A core worker --loglevel=info
 ```
 celery -A core flower --port=5555
 ```
+
+## Centrifugo
+Устанавливаем Centrifugo
+```
+brew tap centrifugal/centrifugo
+brew install centrifugo
+```
+Запускаем Centifugo в новом окне терминала
+```
+centrifugo -c config.json
+```
 # Пользователи
 ## Админ
 E-Mail: admin@admin.com
