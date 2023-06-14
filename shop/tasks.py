@@ -1,4 +1,6 @@
 from celery import shared_task
+from celery.task import periodic_task
+from datetime import timedelta
 from django.core.mail import send_mail
 
 
@@ -22,7 +24,7 @@ def send_email_created_orders(id):
         fail_silently=True
     )
 
-@shared_task
+@periodic_task(run_every=timedelta(minutes=2880))
 def send_email_updated_orders(id):
     send_mail(
         'Заказ обновлен',
