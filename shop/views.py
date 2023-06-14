@@ -7,7 +7,7 @@ from django.core.mail import send_mail
 from authentication.models import User
 from shop.models import Shoes, ShopItems, Order
 from shop.serializers import ShoesSerializer, ShopItemsSerializer, OrderSerializer
-from .tasks import send_email_created_shoes
+from .tasks import send_email_created_shoes, send_email_created_orders, send_email_updated_orders
 
 
 class ShoesViewSet(ModelViewSet):
@@ -71,13 +71,7 @@ class OrderViewSet(ModelViewSet):
 
         response = super().create(request, *args, **kwargs)
 
-        send_mail(
-            'Заказ создан',
-            f'Создан заказ с id: {response.data.get("id")}',
-            'admin1@gmail.com',
-            ['admin2@gmail.com'],
-            fail_silently=True
-        )
+        send_email_created_orders.delay(response.data.get("id"))
 
         return response
 
@@ -88,13 +82,7 @@ class OrderViewSet(ModelViewSet):
 
         response = super().update(request, *args, **kwargs)
 
-        send_mail(
-            'Заказ изменен',
-            f'Заказ изменен с id: {response.data.get("id")}',
-            'admin1@gmail.com',
-            ['admin2@gmail.com'],
-            fail_silently=True
-        )
+        send_email_updated_orders.delay(response.data.get("id"))
 
         return response
 
