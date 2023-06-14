@@ -1,0 +1,20 @@
+[
+    {
+      "model": "delivery.delivery",
+      "pk": 1,
+      "fields": {
+        "purchase": 3,
+        "order": 1,
+        "status": "Готов к выдаче"
+      }
+    },
+    {
+      "model": "delivery.delivery",
+      "pk": 2,
+      "fields": {
+        "purchase": 5,
+        "order": 2,
+        "status": "Отправлен"
+      }
+    }
+    ]

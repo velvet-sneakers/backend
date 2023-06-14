@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-j3bb*u#s+u&7#_u@xh!86ag*-h(jkmd@0824n*gk00wp18l!dt
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-CORS_ALLOWED_ORIGINS = ['http://localhost:3000']
+CORS_ALLOWED_ORIGINS = ['https://localhost']
 
 
 # Application definition
@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'corsheaders',
 
+    'delivery',
     'shop',
     'product',
     'authentication',
@@ -154,4 +155,16 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = '127.0.0.1'
 EMAIL_PORT = 1025
 
+# Настройки Celery
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  # URL-адрес Redis
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'  # URL-адрес Redis для результатов
 
+# Конфигурация Celery Flower
+CELERY_FLOWER = {
+    'BROKER_URL': CELERY_BROKER_URL,
+    'BROKER_API': 'redis://localhost:6379/0',
+    'persistent': True,
+    'db': 0,
+    'port': 5555,
+    'address': '127.0.0.1'
+}
