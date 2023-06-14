@@ -5,7 +5,7 @@ from django.core.mail import send_mail
 from delivery.models import Delivery
 from delivery.serializers import DeliverySerializer
 
-
+from delivery.tasks import send_email_created_delivery, send_email_updated_delivery, send_email_deleted_delivery
 
 class DeliveryViewSet(ModelViewSet):
     queryset = Delivery.objects.all()
@@ -20,38 +20,20 @@ class DeliveryViewSet(ModelViewSet):
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
 
-        send_mail(
-            'Создана новая доставка',
-            f'Создана доставка Order - {response.data.get("order")}, Purchase - {response.data.get("purchase")}',
-            'admin1@gmail.com',
-            ['admin2@gmail.com'],
-            fail_silently=True
-        )
+        send_email_created_delivery.delay(response.data.get("id"))
 
         return response
 
     def update(self, request, *args, **kwargs):
         response = super().update(request, *args, **kwargs)
 
-        send_mail(
-            'Изменена доставка',
-            f'Изменена доставка с id: {response.data.get("id")}',
-            'admin1@gmail.com',
-            ['admin2@gmail.com'],
-            fail_silently=True
-        )
+        send_email_updated_delivery.delay(response.data.get("id"))
 
         return response
 
     def destroy(self, request, *args, **kwargs):
         response = super().destroy(request, *args, **kwargs)
 
-        send_mail(
-            'Удалена доставка',
-            f'Удалена доставка с id: {response.data.get("id")}',
-            'admin1@gmail.com',
-            ['admin2@gmail.com'],
-            fail_silently=True
-        )
+        send_email_deleted_delivery.delay(response.data.get("id"))
 
         return response
