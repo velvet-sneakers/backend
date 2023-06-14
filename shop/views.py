@@ -7,7 +7,9 @@ from django.core.mail import send_mail
 from authentication.models import User
 from shop.models import Shoes, ShopItems, Order
 from shop.serializers import ShoesSerializer, ShopItemsSerializer, OrderSerializer
-from .tasks import send_email_created_shoes, send_email_created_orders, send_email_updated_orders
+from .tasks import send_email_created_shoes, send_email_updated_shoes, send_email_created_orders, \
+    send_email_updated_orders, send_email_destroyed_shoes, send_email_created_item, send_email_updated_item, \
+    send_email_deleted_item
 
 
 class ShoesViewSet(ModelViewSet):
@@ -30,26 +32,14 @@ class ShoesViewSet(ModelViewSet):
     def update(self, request, *args, **kwargs):
         response = super().update(request, *args, **kwargs)
 
-        send_mail(
-            'Изменена обувь',
-            f'Изменена обувь с id: {response.data.get("id")}',
-            'admin1@gmail.com',
-            ['admin2@gmail.com'],
-            fail_silently=True
-        )
+        send_email_updated_shoes.delay(response.data.get("name"))
 
         return response
 
     def destroy(self, request, *args, **kwargs):
         response = super().destroy(request, *args, **kwargs)
 
-        send_mail(
-            'Изменена обувь',
-            f'Удалена обувь с id: {response.data.get("id")}',
-            'admin1@gmail.com',
-            ['admin2@gmail.com'],
-            fail_silently=True
-        )
+        send_email_destroyed_shoes.delay(response.data.get("id"))
 
         return response
 
@@ -97,13 +87,7 @@ class ShopItemsViewSet(ModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        send_mail(
-            'Создан предмет магазина',
-            f'Создан предмет магазина с id: {serializer.data.get("id")}',
-            'admin1@gmail.com',
-            ['admin2@gmail.com'],
-            fail_silently=True
-        )
+        send_email_created_item(serializer.data.get("id"))
 
         return Response({'message':'added'})
 
@@ -127,13 +111,7 @@ class ShopItemsViewSet(ModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        send_mail(
-            'Обновлен предмет магазина',
-            f'Обновлен предмет магазина с id: {serializer.data.get("id")}',
-            'admin1@gmail.com',
-            ['admin2@gmail.com'],
-            fail_silently=True
-        )
+        send_email_updated_item.delay(serializer.data.get("id"))
 
         return Response({'message': serializer.data})
 
@@ -147,13 +125,7 @@ class ShopItemsViewSet(ModelViewSet):
         except:
             return Response({'error': 'not put'})
 
-        send_mail(
-            'Удален предмет магазина',
-            f'Удален предмет магазина с id: {items.id}',
-            'admin1@gmail.com',
-            ['admin2@gmail.com'],
-            fail_silently=True
-        )
+        send_email_deleted_item(items.id)
 
         items.delete()
 
