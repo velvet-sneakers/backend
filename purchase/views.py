@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from purchase.serializers import PurchaseSerializer
 from purchase.models import Purchase
 from authentication.models import User
+from purchase.tasks import send_email_created_purchase, send_email_updated_purchase, send_email_deleted_purchase
 
 
 class PurchaseViewSet(ModelViewSet):
@@ -21,6 +22,9 @@ class PurchaseViewSet(ModelViewSet):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
+
+        send_email_created_purchase.delay(serializer.data.get("id"))
+
         return Response({'message':'added'})
 
     @action(methods=['GET'], permission_classes=[IsAuthenticated], detail=False, url_path="items")
@@ -42,6 +46,9 @@ class PurchaseViewSet(ModelViewSet):
         serializer = self.serializer_class(data=request.data ,instance=instance)
         serializer.is_valid(raise_exception=True)
         serializer.save()
+
+        send_email_updated_purchase.delay(serializer.data.get("id"))
+
         return Response({'message': serializer.data})
 
     @action(methods=['DELETE'], permission_classes=[IsAuthenticated], detail=True, url_path="delete-item")
@@ -53,6 +60,8 @@ class PurchaseViewSet(ModelViewSet):
             items = Purchase.objects.get(id=pk)
         except:
             return Response({'error': 'not put'})
+
+        send_email_deleted_purchase.delay(items.id)
 
         items.delete()
         return Response({'message': 'items delete'})
