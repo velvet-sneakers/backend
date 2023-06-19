@@ -3,6 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from django.core.mail import send_mail
+from django.core.cache import cache
 
 from authentication.models import User
 from shop.models import Shoes, ShopItems, Order
@@ -105,12 +106,25 @@ class ShopItemsViewSet(ModelViewSet):
             fail_silently=True
         )
 
+        # Добавляем данные в кеш
+        cache.set(f'shop_item_{serializer.data.get("id")}', serializer.data, timeout=3600)
+
         return Response({'message':'added'})
 
-    @action(methods=['GET'], detail= False,url_path="items")
+    @action(methods=['GET'], detail=False, url_path="items")
     def get_items(self, request):
-        items = ShopItems.objects.all()
-        data=ShopItemsSerializer(items, many=True).data
+        # Пытаемся получить данные из кеша
+        data = cache.get('shop_items')
+        if not data:
+            print("Fetching data from the database")
+            # Если данных в кеше нет, то получаем их из базы данных и добавляем в кеш
+            items = ShopItems.objects.all()
+            data = ShopItemsSerializer(items, many=True).data
+            cache.set('shop_items', data, timeout=3600)
+        else:
+            #Когда сделаете удалите принты для проверки
+            print("Fetching data from cache")
+
         return Response(data)
 
     @action(methods=['PUT'], detail= True ,url_path="update-items")
@@ -135,6 +149,9 @@ class ShopItemsViewSet(ModelViewSet):
             fail_silently=True
         )
 
+        # Обновляем данные в кеше
+        cache.set(f'shop_item_{serializer.data.get("id")}', serializer.data, timeout=3600)
+
         return Response({'message': serializer.data})
 
     @action(methods=['DELETE'], detail= True, url_path="delete-items")
@@ -155,6 +172,10 @@ class ShopItemsViewSet(ModelViewSet):
             fail_silently=True
         )
 
+        # Удаляем данные из кеша
+        cache.delete(f'shop_item_{pk}')
+
         items.delete()
 
         return Response({'message': 'items delete'})
+
