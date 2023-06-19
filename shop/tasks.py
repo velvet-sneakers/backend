@@ -1,5 +1,4 @@
 from celery import shared_task
-from datetime import timedelta
 from django.core.mail import send_mail
 
 
