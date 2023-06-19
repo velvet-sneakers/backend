@@ -168,3 +168,14 @@ CELERY_FLOWER = {
     'port': 5555,
     'address': '127.0.0.1'
 }
+
+# БД Redis для хранения данных
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}
