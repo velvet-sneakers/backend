@@ -34,16 +34,12 @@ class PurchaseViewSet(ModelViewSet):
 
     @action(methods=['GET'], permission_classes=[IsAuthenticated], detail=False, url_path="items")
     def get_items(self, request):
-        # Пытаемся получить данные из кеша
         data = cache.get('purchase_items')
         if not data:
-            print("Fetching data from the database")
-            # Если данных в кеше нет, то получаем их из базы данных и добавляем в кеш
             items = Purchase.objects.all()
             data = PurchaseSerializer(items, many=True).data
             cache.set('purchase_items', data, timeout=3600)
         else:
-            #Когда сделаете удалите принты для проверки
             print("Fetching data from cache")
 
         return Response(data)    
