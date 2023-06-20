@@ -2,6 +2,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from django.core.cache import cache
 
 from purchase.serializers import PurchaseSerializer
 from purchase.models import Purchase
@@ -25,13 +26,27 @@ class PurchaseViewSet(ModelViewSet):
 
         send_email_created_purchase.delay(serializer.data.get("id"))
 
+        items = Purchase.objects.all()
+        data = PurchaseSerializer(items, many=True).data
+        cache.set('purchase_items', data, timeout=3600)
+
         return Response({'message':'added'})
 
     @action(methods=['GET'], permission_classes=[IsAuthenticated], detail=False, url_path="items")
     def get_items(self, request):
-        items = Purchase.objects.all()
-        data = PurchaseSerializer(items, many=True).data
-        return Response(data)
+        # Пытаемся получить данные из кеша
+        data = cache.get('purchase_items')
+        if not data:
+            print("Fetching data from the database")
+            # Если данных в кеше нет, то получаем их из базы данных и добавляем в кеш
+            items = Purchase.objects.all()
+            data = PurchaseSerializer(items, many=True).data
+            cache.set('purchase_items', data, timeout=3600)
+        else:
+            #Когда сделаете удалите принты для проверки
+            print("Fetching data from cache")
+
+        return Response(data)    
 
     @action(methods=['PUT'], permission_classes=[IsAuthenticated], detail=True, url_path="update-item")
     def update_items(self, request, pk):
@@ -49,6 +64,10 @@ class PurchaseViewSet(ModelViewSet):
 
         send_email_updated_purchase.delay(serializer.data.get("id"))
 
+        items = Purchase.objects.all()
+        data = PurchaseSerializer(items, many=True).data
+        cache.set('purchase_items', data, timeout=3600)
+
         return Response({'message': serializer.data})
 
     @action(methods=['DELETE'], permission_classes=[IsAuthenticated], detail=True, url_path="delete-item")
@@ -62,6 +81,10 @@ class PurchaseViewSet(ModelViewSet):
             return Response({'error': 'not put'})
 
         send_email_deleted_purchase.delay(items.id)
+
+        items = Purchase.objects.all()
+        data = PurchaseSerializer(items, many=True).data
+        cache.set('purchase_items', data, timeout=3600)
 
         items.delete()
         return Response({'message': 'items delete'})
