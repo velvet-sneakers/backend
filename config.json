@@ -2,7 +2,10 @@
   "port": 8001,
   "engine": "redis",
   "redis_address": "redis://localhost:6379",
-  "allowed_origins": "http://127.0.0.1:8000",
+  "allowed_origins": [
+    "http://127.0.0.1:8000",
+    "http://localhost:8000"
+  ],
   "proxy_connect_endpoint": "http://localhost:8000/chat/centrifugo/connect/",
   "proxy_publish_endpoint": "http://localhost:8000/chat/centrifugo/publish/",
   "proxy_subscribe_endpoint": "http://localhost:8000/chat/centrifugo/subscribe/",
