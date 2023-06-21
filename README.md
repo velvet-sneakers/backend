@@ -144,6 +144,58 @@ brew install centrifugo
 ```
 centrifugo -c config.json
 ```
+
+## Как сделать кеширование в Redis
+Устанавливаем все новые зависимости в проекте
+```
+pip install -r requirements.txt
+```
+Далее заходим во `views.py` и для каждого запроса который нам нужен делаем так ->  
+```python
+from django.core.cache import cache
+
+# Для создания
+@action(methods=['POST'],detail= False, url_path="create-items")
+    def create_items(self, request):
+        serializer = self.serializer_class(data=request.data)
+        # Остальной код
+        
+        # Добавляем данные в кеш
+        cache.set(f'shop_item_{serializer.data.get("id")}', serializer.data, timeout=3600)
+        
+@action(methods=['GET'], detail=False, url_path="items")
+    def get_items(self, request):
+        # Пытаемся получить данные из кеша
+        data = cache.get('shop_items')
+        if not data:
+            print("Fetching data from the database")
+            # Если данных в кеше нет, то получаем их из базы данных и добавляем в кеш
+            items = ShopItems.objects.all()
+            data = ShopItemsSerializer(items, many=True).data
+            cache.set('shop_items', data, timeout=3600)
+        else:
+            #Когда сделаете удалите принты для проверки
+            print("Fetching data from cache")
+
+        return Response(data)
+```
+Аналогично для `"PUT", "DELETE"` 
+```python
+# Обновляем данные в кеше
+        cache.set(f'shop_item_{serializer.data.get("id")}', serializer.data, timeout=3600)
+
+# Удаляем данные из кеша
+        cache.delete(f'shop_item_{pk}')
+```
+Теперь проверяем:
+1. в 1 терминале запускаем сервер
+2. во 2 терминале запускаем `redis-server`
+
+Теперь создаем(если нету) или получаем из бд предмет на сайте, принты в 1 термин. покажут что происходит.
+
+3. в 3 терминале в самом конце проверим ключи - `redis-cli keys "*"`. 
+Там должен будет появиться ключ с названием из строки `cache.get(f'shop_item_{pk}')`. Например у меня `shop_item`
+
 # Пользователи
 ## Админ
 E-Mail: admin@admin.com

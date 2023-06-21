@@ -2,12 +2,14 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from django.core.mail import send_mail
+from django.core.cache import cache
 
 from authentication.models import User
 from shop.models import Shoes, ShopItems, Order
 from shop.serializers import ShoesSerializer, ShopItemsSerializer, OrderSerializer
-from .tasks import send_email_created_shoes, send_email_created_orders, send_email_updated_orders
+from .tasks import send_email_created_shoes, send_email_updated_shoes, send_email_created_orders, \
+    send_email_updated_orders, send_email_destroyed_shoes, send_email_created_item, send_email_updated_item, \
+    send_email_deleted_item
 
 
 class ShoesViewSet(ModelViewSet):
@@ -25,31 +27,21 @@ class ShoesViewSet(ModelViewSet):
 
         send_email_created_shoes.delay(response.data.get("name"))
 
+        cache.set('shoes', response.data, timeout=3600)
+
         return response
 
     def update(self, request, *args, **kwargs):
         response = super().update(request, *args, **kwargs)
 
-        send_mail(
-            'Изменена обувь',
-            f'Изменена обувь с id: {response.data.get("id")}',
-            'admin1@gmail.com',
-            ['admin2@gmail.com'],
-            fail_silently=True
-        )
+        send_email_updated_shoes.delay(response.data.get("name"))
 
         return response
 
     def destroy(self, request, *args, **kwargs):
         response = super().destroy(request, *args, **kwargs)
 
-        send_mail(
-            'Изменена обувь',
-            f'Удалена обувь с id: {response.data.get("id")}',
-            'admin1@gmail.com',
-            ['admin2@gmail.com'],
-            fail_silently=True
-        )
+        send_email_destroyed_shoes.delay(response.data.get("id"))
 
         return response
 
@@ -97,23 +89,31 @@ class ShopItemsViewSet(ModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        send_mail(
-            'Создан предмет магазина',
-            f'Создан предмет магазина с id: {serializer.data.get("id")}',
-            'admin1@gmail.com',
-            ['admin2@gmail.com'],
-            fail_silently=True
-        )
+        send_email_created_item(serializer.data.get("id"))
 
-        return Response({'message':'added'})
-
-    @action(methods=['GET'], detail= False,url_path="items")
-    def get_items(self, request):
         items = ShopItems.objects.all()
-        data=ShopItemsSerializer(items, many=True).data
+        data = ShopItemsSerializer(items, many=True).data
+        cache.set('shop_items', data, timeout=3600)
+
+        return Response({'message': 'added'})
+
+    @action(methods=['GET'], detail=False, url_path="items")
+    def get_items(self, request):
+        # Пытаемся получить данные из кеша
+        data = cache.get('shop_items')
+        if not data:
+            print("Fetching data from the database")
+            # Если данных в кеше нет, то получаем их из базы данных и добавляем в кеш
+            items = ShopItems.objects.all()
+            data = ShopItemsSerializer(items, many=True).data
+            cache.set('shop_items', data, timeout=3600)
+        else:
+            #Когда сделаете удалите принты для проверки
+            print("Fetching data from cache")
+
         return Response(data)
 
-    @action(methods=['PUT'], detail= True ,url_path="update-items")
+    @action(methods=['PUT'], detail=True, url_path="update-items")
     def update_items(self, request, pk):
         if not pk:
             return Response({'error': 'not put'})
@@ -123,19 +123,17 @@ class ShopItemsViewSet(ModelViewSet):
         except:
             return Response({'error': 'not put'})
 
-        serializer = self.serializer_class(data=request.data ,instance=instance)
+        serializer = self.serializer_class(data=request.data, instance=instance)
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        send_mail(
-            'Обновлен предмет магазина',
-            f'Обновлен предмет магазина с id: {serializer.data.get("id")}',
-            'admin1@gmail.com',
-            ['admin2@gmail.com'],
-            fail_silently=True
-        )
+        send_email_updated_item.delay(serializer.data.get("id"))
 
-        return Response({'message': serializer.data})
+        items = ShopItems.objects.all()
+        data = ShopItemsSerializer(items, many=True).data
+        cache.set('shop_items', data, timeout=3600)
+
+        return Response({'data': data})
 
     @action(methods=['DELETE'], detail= True, url_path="delete-items")
     def delete_items(self, request, pk):
@@ -147,14 +145,13 @@ class ShopItemsViewSet(ModelViewSet):
         except:
             return Response({'error': 'not put'})
 
-        send_mail(
-            'Удален предмет магазина',
-            f'Удален предмет магазина с id: {items.id}',
-            'admin1@gmail.com',
-            ['admin2@gmail.com'],
-            fail_silently=True
-        )
-
         items.delete()
 
+        send_email_deleted_item(items.id)
+
+        items = ShopItems.objects.all()
+        data = ShopItemsSerializer(items, many=True).data
+        cache.set('shop_items', data, timeout=3600)
+
         return Response({'message': 'items delete'})
+
