@@ -134,6 +134,17 @@ celery -A core worker --loglevel=info
 celery -A core flower --port=5555
 ```
 
+## Centrifugo
+Устанавливаем Centrifugo
+```
+brew tap centrifugal/centrifugo
+brew install centrifugo
+```
+Запускаем Centifugo в новом окне терминала
+```
+centrifugo -c config.json
+```
+
 ## Как сделать кеширование в Redis
 Устанавливаем все новые зависимости в проекте
 ```
